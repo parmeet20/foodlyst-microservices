@@ -1,0 +1,31 @@
+# Default values for kafka.
+nameOverride: "kafka"
+fullnameOverride: "kafka"
+namespace: "foodlyst-microservice"
+
+replicaCount: 1
+
+image:
+  repository: apache/kafka
+  tag: "4.1.1"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 9092
+
+clusterId: "Mk2U3i3qT6aR7k8j9oPqrQ=="
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 10Gi
+  storageClass: ""
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: 2000m
+    memory: 2Gi

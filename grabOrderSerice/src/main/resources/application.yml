@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: grabOrderSerice
+  config:
+    import: "optional:configserver:http://${CONFIG_SERVER_HOST}:8888"

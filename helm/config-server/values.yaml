@@ -1,0 +1,36 @@
+# Default values for config-server.
+nameOverride: "config-server"
+fullnameOverride: "config-server"
+namespace: "foodlyst-microservice"
+
+replicaCount: 1
+
+image:
+  repository: param9999/config-server
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8888
+  targetPort: 8888
+
+livenessProbe:
+  enabled: true
+  path: /actuator/health
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  enabled: true
+  path: /actuator/health
+  initialDelaySeconds: 20
+  periodSeconds: 10
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

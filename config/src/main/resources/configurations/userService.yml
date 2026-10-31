@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: userService
+  datasource:
+    url: jdbc:mysql://localhost:3306/user
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+jwt:
+  private-key: |
+    MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDXtR4eRLCLhFYxbjYqj1dFTlFu4McLRG3dozG0ls0lqu5UBEffdOenu1SapNEonl16M+TwtDONALt8C2xo6D2roRUpYqybjFBt/peksqGqaNRZq51qHF5sZaQKKJNbtKCGGkTWK87vCpxICiSq02pUTTbYV2C3RfQbxEbrt7lVW8qRBQprBNmoKgqUp9Ln/94eWRp9loepmB8jQhQmEQZv3cO2HneSK5qVgbim+RMGMz/Re0uCw+CFR/CH2uFe6EQ1C2NR9toloOfoPyiZCuMVCCgu8Vwz17zEu7uBMsp+BCq2vP2x66E1lUs3t91CuTDZsfWvwo6zdYopu++IcNvXAgMBAAECggEAFC+h2ulIsDW5LzUGIqN5YkX6/upQFjDYKzabby/xkMXXOcuQwkuZZiv0tegYnrl7O/VhRllGvbpE0U3sXkDljIsthMr0JjZSTIjXvhTtZhobTSzvNT/kYjZ8zGqRp7JWl1Yb/QLqgZo3l9JDLi1MtQjoygQbS+ti9bo/fM2brW4Wl4ESWH8Al9ipWi6PEf1iBajXPypf7ZkqxijDQoSfSCYeWE9e5BFRtJH/lCU/qaWFxDxNvcYXAp6J3RV1FlEbXXewpbKk3AIskwsrRQhJh4s0HPLZt2Xhbte8IUXBVlG/DW5uhUhIEBKy7SywkpynNgB9Q69gYaJzTRBz2jH4IQKBgQDg4Y+/LrWfEnQBm0PmuNZWdoCEz86kKSrVqdw3FG3Qk/zeP9YymZOWy1g6GF/AILkg2ItxHg1sDH8oRlmKKL9qtW9bJ2fUFKUFTMTVU4ti05qoIfK/ErpwSh/fk/2gDrWlf1f1s8OumBSWDJDkM4tCf4JT2HGVy055857hr858RwKBgQD1jpR7IYnp3P6oJAMScC0pMW5wshiSJhgz1qri5qYZUT0VHOJUGtrPfgnDwh1xf0lO3CHm6Z/XE79Ja2Zzuvj8SW1G2Huh5sgvXFV0XS8VZ5csJOn3PRkXBQ7bl6SBoSR4pRIigrF4oc/kIgbiYZFIcdL/NZVXiL0gWASOLIq78QKBgEjOfl2lX8Pqk4hZnng6a5p+r0lQhlR7x5R5dASZJpya7Ql/nXewZSozF5NnhMiNT6KkuTCcTDgpK5n8fMzQOHjx2OWoMmNlc6/tlOSEMeKDI9U/eHoINDhap0sZfMmvOXwlaHLyCm6iajfSRa68SV/0LFu8/blDo1q0V0I2SyHNAoGBAMi7w3lck2cP90TwG2rJNMHF3OhXTmq6pXJK++r8ba+oj2xg7kueoFyaRdU3K+aKDR1gKn6fYMDrLaYRG/FjWQKz65bMhVR2WhMNQfYb7s9qnVPC4VfxJD+DLQAp2Jr3Zd8R4d9AQ1+/tzhg8IvDAobcNYXXAbxK1YBJM4AdvVOhAoGAKxP1E12GKyVptqax4FkbKP+bFx749Speqh4nOvKKvugTqOcS0l417wPngmvtv5q0LcRuU4iZQ2v50KYi06ikbFvcjogsj56ltJOUrNRZhU40MAzXM7LZRYvYR5wpefSvkmgYxccckUzNp78rGVDYex5khKTyiSyu9GcTEHLc6JI=
+  public-key: |
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA17UeHkSwi4RWMW42Ko9XRU5RbuDHC0Rt3aMxtJbNJaruVARH33Tnp7tUmqTRKJ5dejPk8LQzjQC7fAtsaOg9q6EVKWKsm4xQbf6XpLKhqmjUWaudahxebGWkCiiTW7SghhpE1ivO7wqcSAokqtNqVE022Fdgt0X0G8RG67e5VVvKkQUKawTZqCoKlKfS5//eHlkafZaHqZgfI0IUJhEGb93Dth53kiualYG4pvkTBjM/0XtLgsPghUfwh9rhXuhENQtjUfbaJaDn6D8omQrjFQgoLvFcM9e8xLu7gTLKfgQqtrz9seuhNZVLN7fdQrkw2bH1r8KOs3WKKbvviHDb1wIDAQAB
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+feign:
+  discovery:
+    enabled: true
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+server:
+  port: 8079

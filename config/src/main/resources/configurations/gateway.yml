@@ -1,0 +1,53 @@
+server:
+  port: 8222
+
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  cloud:
+    config:
+      enabled: true
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+      routes:
+        - id: userService
+          uri: lb://userService
+          predicates:
+            - Path=/auth/**
+        - id: restaurantService
+          uri: lb://restaurantService
+          predicates:
+            - Path=/api/v1/restaurants/**
+        - id: offerService
+          uri: lb://offerService
+          predicates:
+            - Path=/api/v1/food-offers/**
+        - id: grabOrderSerice
+          uri: lb://grabOrderSerice
+          predicates:
+            - Path=/api/v1/rating/**
+        - id: balanceService
+          uri: lb://balanceService
+          predicates:
+            - Path=/api/v1/wallet/**
+        - id: orderService
+          uri: lb://orderService
+          predicates:
+            - Path=/api/v1/orders/**
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:public.pem

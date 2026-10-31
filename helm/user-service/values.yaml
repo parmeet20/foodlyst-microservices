@@ -1,0 +1,57 @@
+# Default values for user-service.
+nameOverride: "user-service"
+fullnameOverride: "user-service"
+namespace: "foodlyst-microservice"
+
+replicaCount: 1
+
+image:
+  repository: param9999/user-service
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: NodePort
+  port: 8079
+  targetPort: 8079
+  nodePort: 30079
+
+env:
+  - name: CONFIG_SERVER_HOST
+    value: "config-server"
+  - name: MYSQL_HOST
+    value: "mysql"
+  - name: MYSQL_PORT
+    value: "3306"
+  - name: MYSQL_DATABASE
+    value: "user"
+  - name: MYSQL_USER
+    value: "foodlyst_user"
+  - name: MYSQL_PASSWORD
+    value: "password"
+  - name: EUREKA_URL
+    value: "eureka-server"
+  - name: KAFKA_HOST
+    value: "kafka"
+  - name: ZIPKIN_HOST
+    value: "zipkin"
+
+livenessProbe:
+  enabled: true
+  path: /actuator/health
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  enabled: true
+  path: /actuator/health
+  initialDelaySeconds: 20
+  periodSeconds: 10
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

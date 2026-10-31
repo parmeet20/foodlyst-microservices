@@ -1,0 +1,26 @@
+spring:
+  main:
+    lazy-initialization: true
+  application:
+    name: config
+  profiles:
+    active: git   # ← ACTIVATE GIT PROFILE
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/parmeet20/foodlyst_config_server.git
+          default-label: main
+
+server:
+  port: 8888
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

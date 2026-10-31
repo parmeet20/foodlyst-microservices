@@ -1,0 +1,32 @@
+# Default values for zipkin.
+nameOverride: "zipkin"
+fullnameOverride: "zipkin"
+namespace: "foodlyst-microservice"
+
+replicaCount: 1
+
+image:
+  repository: openzipkin/zipkin
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 9411
+  targetPort: 9411
+
+env: []
+
+livenessProbe:
+  enabled: false
+
+readinessProbe:
+  enabled: false
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

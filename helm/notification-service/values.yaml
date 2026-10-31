@@ -1,0 +1,51 @@
+# Default values for notification-service.
+nameOverride: "notification-service"
+fullnameOverride: "notification-service"
+namespace: "foodlyst-microservice"
+
+replicaCount: 1
+
+image:
+  repository: param9999/notification-service
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: NodePort
+  port: 8087
+  targetPort: 8087
+  nodePort: 30087
+
+env:
+  - name: CONFIG_SERVER_HOST
+    value: "config-server"
+  - name: EUREKA_URL
+    value: "eureka-server"
+  - name: KAFKA_HOST
+    value: "kafka"
+  - name: ZIPKIN_HOST
+    value: "zipkin"
+  - name: MAIL_USERNAME
+    value: "param9999.singh@gmail.com"
+  - name: MAIL_PASSWORD
+    value: "yrhbnhjqwecwowdf"
+
+livenessProbe:
+  enabled: true
+  path: /actuator/health
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  enabled: true
+  path: /actuator/health
+  initialDelaySeconds: 20
+  periodSeconds: 10
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

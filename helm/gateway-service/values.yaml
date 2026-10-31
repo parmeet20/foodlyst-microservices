@@ -1,0 +1,44 @@
+# Default values for gateway-service.
+nameOverride: "gateway-service"
+fullnameOverride: "gateway-service"
+namespace: "foodlyst-microservice"
+
+replicaCount: 2
+
+image:
+  repository: param9999/gateway-service
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: LoadBalancer
+  port: 8222
+  targetPort: 8222
+
+env:
+  - name: CONFIG_SERVER_HOST
+    value: "config-server"
+  - name: EUREKA_URL
+    value: "eureka-server"
+  - name: ZIPKIN_HOST
+    value: "zipkin"
+
+livenessProbe:
+  enabled: true
+  path: /actuator/health
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  enabled: true
+  path: /actuator/health
+  initialDelaySeconds: 20
+  periodSeconds: 10
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

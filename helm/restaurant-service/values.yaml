@@ -1,0 +1,57 @@
+# Default values for restaurant-service.
+nameOverride: "restaurant-service"
+fullnameOverride: "restaurant-service"
+namespace: "foodlyst-microservice"
+
+replicaCount: 1
+
+image:
+  repository: param9999/restaurant-service
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: NodePort
+  port: 8083
+  targetPort: 8083
+  nodePort: 30083
+
+env:
+  - name: CONFIG_SERVER_HOST
+    value: "config-server"
+  - name: MYSQL_HOST
+    value: "mysql"
+  - name: MYSQL_PORT
+    value: "3306"
+  - name: MYSQL_DATABASE
+    value: "restaurants"
+  - name: MYSQL_USER
+    value: "foodlyst_user"
+  - name: MYSQL_PASSWORD
+    value: "password"
+  - name: EUREKA_URL
+    value: "eureka-server"
+  - name: KAFKA_HOST
+    value: "kafka"
+  - name: ZIPKIN_HOST
+    value: "zipkin"
+
+livenessProbe:
+  enabled: true
+  path: /actuator/health
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  enabled: true
+  path: /actuator/health
+  initialDelaySeconds: 20
+  periodSeconds: 10
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

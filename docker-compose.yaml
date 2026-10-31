@@ -1,0 +1,270 @@
+networks:
+  foodlyst-microservices-springboot:
+    driver: bridge
+
+services:
+  ############################
+  # MYSQL DATABASE
+  ############################
+  mysql:
+    image: mysql:latest  # ← THIS IS THE KEY (NOT latest!)
+    container_name: mysql-foodlyst
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - foodlyst-microservices-springboot
+  ############################
+  # KAFKA (KRaft mode - No Zookeeper)
+  ############################
+  kafka:
+    image: apache/kafka:4.1.1
+    container_name: kafkafoodlyst
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafkafoodlyst:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafkafoodlyst:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    networks:
+      - foodlyst-microservices-springboot
+
+  ############################
+  # ZIPKIN (Distributed Tracing)
+  ############################
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    environment:
+      - STORAGE_TYPE=mysql
+      - MYSQL_DB=zipkin
+      - MYSQL_USER=foodlyst_user
+      - MYSQL_PASS=foodlyst_pass
+      - MYSQL_HOST=mysql-foodlyst
+    depends_on:
+      - mysql
+    networks:
+      - foodlyst-microservices-springboot
+  ############################
+  # CONFIG SERVER
+  ############################
+  config-server:
+    build: ./config
+    image: foodlyst/config-server
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    networks:
+      - foodlyst-microservices-springboot
+
+  ############################
+  # EUREKA SERVER
+  ############################
+  eureka-server:
+    build: ./ServiceRegistry
+    image: foodlyst/eureka-server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    depends_on:
+      - config-server
+    networks:
+      - foodlyst-microservices-springboot
+    environment:
+      CONFIG_SERVER_HOST: config-server
+
+  ############################
+  # USER SERVICE
+  ############################
+  user-service:
+    build: ./userService
+    image: foodlyst/user-service
+    container_name: user-service
+    ports:
+      - "8079:8079"
+    depends_on:
+      - config-server
+      - eureka-server
+      - mysql
+    networks:
+      - foodlyst-microservices-springboot
+    environment:
+      CONFIG_SERVER_HOST: config-server
+      EUREKA_URL: eureka-server
+      MYSQL_HOST: mysql-foodlyst
+      ZIPKIN_HOST: zipkin
+      KAFKA_HOST: kafkafoodlyst
+
+
+  balance-service:
+    build:
+      context: ./balanceService
+    container_name: balance-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - config-server
+      - eureka-server
+      - mysql
+      - kafka
+      - user-service
+    networks:
+      - foodlyst-microservices-springboot
+    environment:
+      CONFIG_SERVER_HOST: config-server
+      EUREKA_URL: eureka-server
+      MYSQL_HOST: mysql-foodlyst
+      ZIPKIN_HOST: zipkin
+      KAFKA_HOST: kafkafoodlyst
+
+  restaurant-service:
+    build:
+      context: ./restaurantService
+    container_name: restaurant-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - config-server
+      - eureka-server
+      - mysql
+    networks:
+      - foodlyst-microservices-springboot
+    environment:
+      CONFIG_SERVER_HOST: config-server
+      EUREKA_URL: eureka-server
+      MYSQL_HOST: mysql-foodlyst
+      ZIPKIN_HOST: zipkin
+      KAFKA_HOST: kafkafoodlyst
+
+  offer-service:
+    build:
+      context: ./offerService
+    container_name: offer-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - config-server
+      - eureka-server
+      - mysql
+    networks:
+      - foodlyst-microservices-springboot
+    environment:
+      CONFIG_SERVER_HOST: config-server
+      EUREKA_URL: eureka-server
+      MYSQL_HOST: mysql-foodlyst
+      ZIPKIN_HOST: zipkin
+      KAFKA_HOST: kafkafoodlyst
+
+  order-service:
+    build:
+      context: ./orderService
+    container_name: order-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - config-server
+      - eureka-server
+      - mysql
+    networks:
+      - foodlyst-microservices-springboot
+    environment:
+      CONFIG_SERVER_HOST: config-server
+      EUREKA_URL: eureka-server
+      MYSQL_HOST: mysql-foodlyst
+      ZIPKIN_HOST: zipkin
+      KAFKA_HOST: kafkafoodlyst
+
+  transaction-service:
+    build:
+      context: ./transactionService
+    container_name: transaction-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - config-server
+      - eureka-server
+      - mysql
+    networks:
+      - foodlyst-microservices-springboot
+    environment:
+      CONFIG_SERVER_HOST: config-server
+      EUREKA_URL: eureka-server
+      MYSQL_HOST: mysql-foodlyst
+      ZIPKIN_HOST: zipkin
+      KAFKA_HOST: kafkafoodlyst
+  rating-service:
+    build:
+      context: ./grabOrderSerice
+    container_name: rating-service
+    ports:
+      - "8088:8088"
+    depends_on:
+      - config-server
+      - eureka-server
+      - mysql
+    networks:
+      - foodlyst-microservices-springboot
+    environment:
+      CONFIG_SERVER_HOST: config-server
+      EUREKA_URL: eureka-server
+      MYSQL_HOST: mysql-foodlyst
+      ZIPKIN_HOST: zipkin
+      KAFKA_HOST: kafkafoodlyst
+
+
+  notification-service:
+    build:
+      context: ./notificationService
+    container_name: notification-service
+    ports:
+      - "8087:8087"
+    depends_on:
+      - config-server
+      - eureka-server
+      - mysql
+    networks:
+      - foodlyst-microservices-springboot
+    environment:
+      CONFIG_SERVER_HOST: config-server
+      EUREKA_URL: eureka-server
+      MYSQL_HOST: mysql-foodlyst
+      ZIPKIN_HOST: zipkin
+      KAFKA_HOST: kafkafoodlyst
+      EMAIL_USERNAME: param9999.singh@gmail.com
+      EMAIL_PASSWORD: yrhbnhjqwecwowdf
+
+  gateway-service:
+    build: ./gateway
+    container_name: gateway-service
+    ports:
+      - "8222:8222"
+    depends_on:
+      - config-server
+      - eureka-server
+      - user-service
+    networks:
+      - foodlyst-microservices-springboot
+    environment:
+      CONFIG_SERVER_HOST: config-server
+      EUREKA_URL: eureka-server
+      ZIPKIN_HOST: zipkin
+
+volumes:
+  mysql-data:
+  kafka-data:

@@ -1,0 +1,40 @@
+# Default values for eureka-server.
+nameOverride: "eureka-server"
+fullnameOverride: "eureka-server"
+namespace: "foodlyst-microservice"
+
+replicaCount: 1
+
+image:
+  repository: param9999/eureka-server
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8761
+  targetPort: 8761
+
+env:
+  - name: CONFIG_SERVER_HOST
+    value: "config-server"
+
+livenessProbe:
+  enabled: true
+  path: /actuator/health
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  enabled: true
+  path: /actuator/health
+  initialDelaySeconds: 20
+  periodSeconds: 10
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

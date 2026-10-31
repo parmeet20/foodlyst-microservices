@@ -1,0 +1,6 @@
+apiVersion: v2
+name: kafka
+description: Helm chart for FoodLyst Apache Kafka (KRaft mode)
+type: application
+version: 0.1.0
+appVersion: "4.1.1"

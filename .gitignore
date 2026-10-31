@@ -1,0 +1,113 @@
+# ==============================================================================
+# FoodLyst Microservices - .gitignore
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Build & Compiled Binaries (Maven & Gradle)
+# ------------------------------------------------------------------------------
+**/target/
+**/build/
+**/out/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+
+# Maven Wrapper binaries (keep scripts mvnw and mvnw.cmd)
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ------------------------------------------------------------------------------
+# IDE & Editor Specific Files
+# ------------------------------------------------------------------------------
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+
+# Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+
+# Visual Studio Code
+.vscode/
+
+# NetBeans
+**/nbproject/private/
+**/nbbuild/
+**/dist/
+**/nbnetbeanstest/
+
+# ------------------------------------------------------------------------------
+# Logs & Process Dumps
+# ------------------------------------------------------------------------------
+*.log
+**/logs/
+*.stackdump
+*.dump
+hs_err_pid*
+replay_pid*
+
+# ------------------------------------------------------------------------------
+# Local Environment & Secrets
+# ------------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jks
+
+# ------------------------------------------------------------------------------
+# Local Docker / Database Volumes & Storage
+# ------------------------------------------------------------------------------
+mysql-data/
+kafka-data/
+**/mysql-data/
+**/kafka-data/
+docker-compose.override.yml
+
+# ------------------------------------------------------------------------------
+# Helm & Kubernetes Artifacts
+# ------------------------------------------------------------------------------
+*.tgz
+.helm/
+*.lock
+
+# ------------------------------------------------------------------------------
+# Operating System Files
+# ------------------------------------------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# Linux / Vim / Backup files
+*~
+*.swp
+*.swo
+*.bak
+*.tmp
